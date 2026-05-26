@@ -4,9 +4,8 @@
 **Materia:** Sistemas Operativos  
 **Grupo:** F
 **Enlace a Github:** https://github.com/mateosebastian236236/POYECTO-SistemasOperativos-2026A
+**Fecha:** 25/05/2026
 **Docente:** PhD. Silvia Diana Martínez Mosquera  
-**Año:** 2026
-
 ---
 
 ## Descripción del Problema
