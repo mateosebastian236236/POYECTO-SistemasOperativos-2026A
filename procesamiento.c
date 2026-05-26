@@ -3,7 +3,9 @@
 #include <string.h>
 #include "procesamiento.h"
 
+// Reemplaza -1 en monto, cantidad, descuento por el promedio del bloque
 void limpiar_nulos_numericos(Transaccion* datos, int inicio, int fin) {
+    // Calcular sumas y contar no nulos para cada campo
     float suma_monto = 0.0f;
     int count_monto = 0;
     float suma_cantidad = 0.0f;
@@ -26,10 +28,12 @@ void limpiar_nulos_numericos(Transaccion* datos, int inicio, int fin) {
         }
     }
     
+    // Calcular promedios (si no hay datos no nulos, se deja 0)
     float promedio_monto = (count_monto > 0) ? (suma_monto / count_monto) : 0.0f;
     float promedio_cantidad = (count_cantidad > 0) ? (suma_cantidad / count_cantidad) : 0.0f;
     float promedio_descuento = (count_descuento > 0) ? (suma_descuento / count_descuento) : 0.0f;
     
+    // Reemplazar centinelas
     for (int i = inicio; i < fin; i++) {
         if (datos[i].monto == -1.0f) datos[i].monto = promedio_monto;
         if (datos[i].cantidad == -1.0f) datos[i].cantidad = promedio_cantidad;
@@ -37,11 +41,11 @@ void limpiar_nulos_numericos(Transaccion* datos, int inicio, int fin) {
     }
 }
 
-
+// Calcula la moda de un campo categórico en el bloque
 static void moda_campo(Transaccion* datos, int inicio, int fin, 
                        char* destino, size_t destino_size,
                        const char* (*getter)(Transaccion*)) {
-
+    // Arreglos para almacenar valores únicos y sus frecuencias
     char* valores[100];
     int frecuencias[100];
     int num_unicos = 0;
@@ -66,6 +70,7 @@ static void moda_campo(Transaccion* datos, int inicio, int fin,
         }
     }
     
+    // Encontrar el de mayor frecuencia
     int max_freq = 0;
     int idx_moda = 0;
     for (int i = 0; i < num_unicos; i++) {
@@ -110,6 +115,7 @@ void normalizar(Transaccion* datos, int inicio, int fin,
                 float min_monto, float max_monto,
                 float min_cantidad, float max_cantidad,
                 float min_descuento, float max_descuento) {
+    // Evitar división por cero si todos los valores son iguales
     float rango_monto = max_monto - min_monto;
     float rango_cantidad = max_cantidad - min_cantidad;
     float rango_descuento = max_descuento - min_descuento;
@@ -131,6 +137,8 @@ void normalizar(Transaccion* datos, int inicio, int fin,
             datos[i].descuento = 0.5f;
     }
 }
+
+// Funciones para calcular mínimos y máximos globales
 
 void obtener_min_max_monto(Transaccion* datos, int n, float* min, float* max) {
     *min = 1e9f;

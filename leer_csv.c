@@ -3,7 +3,7 @@
 #include <string.h>
 #include "leer_csv.h"
 
-
+// Función auxiliar para dividir una línea CSV respetando campos vacíos
 static int dividir_linea(const char* linea, char* campos[], int max_campos) {
     int num_campos = 0;
     const char* inicio = linea;
@@ -12,7 +12,7 @@ static int dividir_linea(const char* linea, char* campos[], int max_campos) {
     while (num_campos < max_campos) {
         fin = strchr(inicio, ',');
         if (!fin) {
-
+            // Último campo hasta el final de la línea (sin \n)
             int len = strlen(inicio);
             if (len > 0 && inicio[len-1] == '\n') len--;
             campos[num_campos] = malloc(len + 1);
@@ -38,15 +38,15 @@ Transaccion* leer_csv(const char* nombre_archivo, int* num_transacciones) {
         return NULL;
     }
     
-
+    // Primera pasada: contar líneas 
     char buffer[1024];
     int total_lineas = 0;
-    fgets(buffer, sizeof(buffer), archivo); 
+    fgets(buffer, sizeof(buffer), archivo); // leer cabecera
     while (fgets(buffer, sizeof(buffer), archivo)) {
         total_lineas++;
     }
     rewind(archivo);
-    fgets(buffer, sizeof(buffer), archivo); 
+    fgets(buffer, sizeof(buffer), archivo); // volver a saltar cabecera
     
     // Reservar memoria para todas las transacciones
     Transaccion* datos = (Transaccion*)malloc(total_lineas * sizeof(Transaccion));
@@ -60,48 +60,48 @@ Transaccion* leer_csv(const char* nombre_archivo, int* num_transacciones) {
         char* campos[7];
         int n = dividir_linea(buffer, campos, 7);
         if (n != 7) {
-      
+            // Si hay menos campos, liberar y continuar
             for (int i = 0; i < n; i++) free(campos[i]);
             continue;
         }
         
-
+        // id_transaccion
         datos[idx].id = atoi(campos[0]);
         
-
+        // fecha
         strncpy(datos[idx].fecha, campos[1], 10);
         datos[idx].fecha[10] = '\0';
         
-
+        // categoria (cadena vacía si nulo)
         strncpy(datos[idx].categoria, campos[2], MAX_CADENA-1);
         datos[idx].categoria[MAX_CADENA-1] = '\0';
         
-
+        // monto (float) -> centinela -1.0
         if (strlen(campos[3]) == 0) {
             datos[idx].monto = -1.0f;
         } else {
             datos[idx].monto = atof(campos[3]);
         }
         
-
+        // cantidad (float) -> centinela -1.0
         if (strlen(campos[4]) == 0) {
             datos[idx].cantidad = -1.0f;
         } else {
             datos[idx].cantidad = atof(campos[4]);
         }
         
-
+        // region
         strncpy(datos[idx].region, campos[5], MAX_CADENA-1);
         datos[idx].region[MAX_CADENA-1] = '\0';
         
-
+        // descuento (float) -> centinela -1.0
         if (strlen(campos[6]) == 0) {
             datos[idx].descuento = -1.0f;
         } else {
             datos[idx].descuento = atof(campos[6]);
         }
         
-
+        // Liberar campos temporales
         for (int i = 0; i < 7; i++) free(campos[i]);
         idx++;
     }
