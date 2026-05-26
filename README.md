@@ -3,6 +3,7 @@
 **Escuela Politécnica Nacional — Facultad de Ingeniería en Sistemas (FIS)**  
 **Materia:** Sistemas Operativos  
 **Grupo:** F
+**Enlace a Github:** https://github.com/mateosebastian236236/POYECTO-SistemasOperativos-2026A
 **Docente:** PhD. Silvia Diana Martínez Mosquera  
 **Año:** 2026
 
